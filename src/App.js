@@ -40,6 +40,10 @@ class App extends Component {
 
     this.setState({ inventory: [] });
 
+    //Empty any records before we assign new ones
+    this.setState({ inventory: [] });
+
+
     //Getting data from firebase
     firebase.database().ref().once('value').then((snapshot) => {
       snapshot.forEach(function (data) {
@@ -76,10 +80,7 @@ class App extends Component {
       </form>
     </span>
 
-    //console.log('how many records I have' + )
-
-    //if (this.state.submitted && this.state.inventory.length) {
-
+    var self = this;
     rows = this.state.inventory.map(function (item, index) {
       return Object.keys(item).map(function (s) {
         //console.log("ITEM:" + item[s].name)
@@ -90,6 +91,8 @@ class App extends Component {
             <th> {item[s].inventory.name} </th>
             <th> {item[s].inventory.description} </th>
             <th> {item[s].inventory.quantity} </th>
+            <th><button value={item[s].inventory.uuid} onClick={self._setFireBaseDataEditTable}>Edit</button> 
+            <button value={item[s].inventory.uuid} onClick={self._handleClick.bind(self)}>Delete</button></th>
           </tr>
         )
       });
@@ -106,6 +109,7 @@ class App extends Component {
               <th> Name </th>
               <th> Description </th>
               <th> Quantity </th>
+              <th> Actions </th>
             </tr>
           </thead>
           <tbody>
@@ -115,12 +119,11 @@ class App extends Component {
       </span>
     )
 
-    
 
     return (
       <div className="App">
         <div className="App-header">
-          <h2>Inventory App</h2>
+          <h2>Ben's Inventory App</h2>
         </div>
         <div className="text-center">
           {inputForm}
@@ -131,6 +134,8 @@ class App extends Component {
       </div>
     );
   }
+
+
 
   //Adding our function that will handle our form submit 
   onSubmit(event) {
@@ -164,17 +169,6 @@ class App extends Component {
     })
 
     this._loadFirebaseData();
-
-    // const newInventoryItem = this.state.inventory.slice()
-
-    // if (details.name) {
-    //   newInventoryItem.push(details)
-    // }
-
-    // this.setState({
-    //   inventory: newInventoryItem,
-    //   submitted: true
-    // })
 
   }
 
